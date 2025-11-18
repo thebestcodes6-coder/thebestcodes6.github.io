@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE BEST CODES</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI', Tahoma, Geneva, Verdana,sans-serif;background-color:#000;color:#fff;padding:20px;}
+h1,h2{text-align:center;margin-bottom:20px;}
+.section{background-color:#111;max-width:900px;margin:20px auto;padding:25px;border-radius:15px;box-shadow:0 0 20px #333;}
+label, select, input{display:block;margin:10px 0;width:100%;padding:10px;font-size:16px;border-radius:8px;border:1px solid #333;background:#222;color:#fff;}
+button{padding:12px 20px;margin-top:10px;cursor:pointer;border:none;border-radius:10px;font-weight:bold;transition:0.3s;background:#333;color:#fff;}
+button:hover{background:#555;}
+.tabs{text-align:center;margin-bottom:20px;}
+.tabs button{margin:0 5px;padding:10px 15px;border-radius:12px;border:none;font-weight:bold;cursor:pointer;background-color:#222;color:#fff;transition:0.3s;}
+.tabs button.active{background-color:#555;}
+.file-card{background-color: rgba(255,255,255,0.05); padding:15px; margin-bottom:20px; border-radius:12px;}
+iframe{width:100%;height:300px;border:1px solid #333;border-radius:10px;margin-top:10px;background:#000;}
+.links{text-align:center;margin:20px 0;}
+.links a{display:inline-block;margin:5px 10px;text-decoration:none;color:#fff;padding:10px 15px;border-radius:10px;font-weight:bold;transition:0.3s;background:#333;}
+.links a:hover{background:#555;}
+.vip-note{color:#f90;font-weight:bold;margin-left:5px;}
+.vip-section{background:rgba(255,255,0,0.05);padding:20px;border-radius:15px;margin:20px auto;text-align:center;box-shadow:0 0 10px #333;}
+.vip-section ul{text-align:left;max-width:700px;margin:0 auto 15px;padding-left:20px;color:#ff8a00;}
+</style>
+</head>
+<body>
+<h1>THE BEST CODES</h1>
+
+<div class="section">
+<h2>Subir Archivos HTML</h2>
+<label>Categoría:</label>
+<select id="categoryUpload">
+<option value="Amor">Amor</option>
+<option value="Romance">Romance</option>
+<option value="Dedicar">Dedicar</option>
+<option value="Amigos">Amigos</option>
+</select>
+<label>Archivo HTML:</label>
+<input type="file" id="fileUpload" accept=".html">
+<label>Tipo:</label>
+<select id="typeUpload">
+<option value="Gratis">Gratis</option>
+<option value="VIP">VIP</option>
+</select>
+<label>Tu correo (Creador):</label>
+<input type="email" id="creatorEmail" placeholder="tu correo">
+<button onclick="uploadFile()">Subir Archivo</button>
+</div>
+
+<div class="section">
+<div class="tabs">
+<button class="active" onclick="showTab('gratis')">Archivos Gratis</button>
+<button onclick="showTab('vip')">Archivos VIP</button>
+</div>
+
+<div class="filters">
+<select id="categoryFilter" onchange="loadFiles()">
+<option value="All">Todas las Categorías</option>
+<option value="Amor">Amor</option>
+<option value="Romance">Romance</option>
+<option value="Dedicar">Dedicar</option>
+<option value="Amigos">Amigos</option>
+</select>
+</div>
+
+<div id="gratisTab">
+<h2>Archivos Gratis</h2>
+<div id="filesList"></div>
+</div>
+
+<div id="vipTab" style="display:none;">
+<h2>Archivos VIP</h2>
+<div id="vipFilesList"></div>
+</div>
+</div>
+
+<div class="vip-section">
+<h2>Suscripción VIP Mensual - $100 Pesos Mexicanos</h2>
+<p><strong>Beneficios que recibes:</strong></p>
+<ul>
+<li>Acceso ilimitado a todos los archivos VIP durante 1 mes.</li>
+<li>Descarga y visualización sin anuncios ni esperas.</li>
+<li>Puedes pedir que te edite cualquier archivo VIP a tu gusto, gratis.</li>
+<li>Soporte prioritario por WhatsApp.</li>
+<li>Tu nombre aparecerá como usuario VIP en la plataforma.</li>
+<li>Recibe todas las actualizaciones y nuevos archivos VIP automáticamente.</li>
+<li>Ayudas a mantener y mejorar la plataforma.</li>
+</ul>
+<p><strong>¡Activa tu suscripción y disfruta de todos los beneficios VIP!</strong></p>
+<button onclick="subscribeVIP()">Suscribirse</button>
+</div>
+
+<div class="links">
+<a href="https://www.tiktok.com/@the.best.codes?_r=1&_t=ZS-91V4RaxyW28" target="_blank">TikTok</a>
+<a href="https://wa.me/524271170343" target="_blank">WhatsApp</a>
+<a href="mailto:thebestcodes6@gmail.com">Correo</a>
+</div>
+
+<script>
+let filesData = JSON.parse(localStorage.getItem('filesData')||'[]');
+let vipFilesData = JSON.parse(localStorage.getItem('vipFilesData')||'[]');
+
+function saveStorage(){ 
+localStorage.setItem('filesData', JSON.stringify(filesData));
+localStorage.setItem('vipFilesData', JSON.stringify(vipFilesData));
+}
+
+function uploadFile(){
+const category=document.getElementById('categoryUpload').value;
+const type=document.getElementById('typeUpload').value;
+const creator=document.getElementById('creatorEmail').value;
+const fileInput=document.getElementById('fileUpload');
+
+if(!creator){ alert("Ingresa tu correo"); return; }
+if(fileInput.files[0]){
+const file=fileInput.files[0];
+const reader=new FileReader();
+reader.onload=e=>{
+if(type==="Gratis"){ filesData.push({name:file.name,category,content:e.target.result,creator}); updateFilesList(); }
+else{ vipFilesData.push({name:file.name,category,content:e.target.result,creator}); updateVipFilesList(); }
+saveStorage();
+}
+reader.readAsText(file);
+}
+fileInput.value="";
+}
+
+function updateFilesList(){
+const container=document.getElementById('filesList'); container.innerHTML="";
+if(filesData.length===0){ container.innerHTML="<p>No hay archivos.</p>"; return; }
+filesData.forEach((file,index)=>{
+const div=document.createElement('div'); div.className="file-card";
+div.innerHTML=`<strong>${file.name}</strong><br>
+<strong>Categoría:</strong> ${file.category}<br>
+<strong>Creador:</strong> ${file.creator}<br>
+<button onclick="previewFile(${index},false)">Vista Previa</button>
+<button onclick="downloadFile(${index},false)">Descargar</button>
+<div id="preview-${index}-normal"></div>`;
+container.appendChild(div);
+});
+}
+
+function updateVipFilesList(){
+const container=document.getElementById('vipFilesList'); container.innerHTML="";
+if(vipFilesData.length===0){ container.innerHTML="<p>No hay archivos VIP.</p>"; return; }
+vipFilesData.forEach((file,index)=>{
+const div=document.createElement('div'); div.className="file-card";
+div.innerHTML=`<strong>${file.name}</strong> <span class="vip-note">(50 Pesos Mexicanos)</span><br>
+<strong>Categoría:</strong> ${file.category}<br>
+<strong>Creador:</strong> ${file.creator}<br>
+<button onclick="previewFile(${index},true)">Vista Previa</button>
+<button onclick="payAndDownload(${index})">Pagar y Descargar</button>
+<div id="preview-${index}-vip"></div>`;
+container.appendChild(div);
+});
+}
+
+function previewFile(index,isVip){
+const previewDiv=document.getElementById(`preview-${index}-${isVip?'vip':'normal'}`);
+const file=isVip?vipFilesData[index]:filesData[index];
+previewDiv.innerHTML=`<iframe srcdoc="${file.content.replace(/"/g,'&quot;')}"></iframe>`;
+}
+
+function downloadFile(index,isVip){
+if(isVip){ alert("Para archivos VIP debes pagar primero."); return; }
+const file=filesData[index];
+const blob=new Blob([file.content],{type:"text/html"});
+const link=document.createElement("a"); link.href=URL.createObjectURL(blob); link.download=file.name; link.click();
+}
+
+function payAndDownload(index){
+window.open("https://www.paypal.me/THE550494/50MXN","_blank");
+}
+
+function subscribeVIP(){
+window.open("https://www.paypal.me/THE550494/100MXN","_blank");
+}
+
+function showTab(tab){
+document.getElementById('gratisTab').style.display = tab==='gratis'?'block':'none';
+document.getElementById('vipTab').style.display = tab==='vip'?'block':'none';
+document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+document.querySelector(`.tabs button:nth-child(${tab==='gratis'?1:2})`).classList.add('active');
+}
+
+function loadFiles(){ updateFilesList(); updateVipFilesList(); }
+
+updateFilesList();
+updateVipFilesList();
+</script>
+</body>
+</html>
